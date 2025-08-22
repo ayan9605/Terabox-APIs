@@ -23,9 +23,15 @@ async function fetchDlink(link, log) {
 
   const browser = await chromium.launch({
   headless: true,
-  executablePath: "/usr/bin/brave-browser", // 👈 point to Brave here
-  args: ["--no-sandbox", "--disable-setuid-sandbox", "--window-size=1280,800"]
-  });
+  executablePath: "/usr/bin/brave-browser-stable", // check actual path
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--window-size=1280,800"
+  ]
+});
 
   const context = await browser.newContext({
     viewport: { width: 1280, height: 800 }
