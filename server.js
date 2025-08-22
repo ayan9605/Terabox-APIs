@@ -105,6 +105,24 @@ async function fetchDlink(link, log) {
       log("👍 No cookie popup.");
     }
 
+    try {
+  const adBtn = await page.waitForSelector('span.fc-list-item-text.fc-rewarded-ad-option-text', { timeout: 2000 });
+  await adBtn.click();
+  log("📺 Ad clicked. Waiting 1 minute...");
+  await page.waitForTimeout(60000); // wait 1 min
+
+  try {
+    const closeAd = await page.waitForSelector('#close-button[role="button"]', { timeout: 5000 });
+    await closeAd.click();
+    log("❌ Ad closed. Continuing...");
+  } catch {
+    log("⚠️ Close button not found after ad.");
+  }
+
+} catch {
+  log("👍 No ad popup found.");
+    }
+
     // fill input
     await page.fill('input[placeholder="Paste your Terabox URL here..."]', link);
     await page.keyboard.press("Enter");
