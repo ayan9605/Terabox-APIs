@@ -18,6 +18,8 @@ function logHeader(title, log) {
 // 🔑 main fetch function (instead of saving file, returns dlink)
 async function fetchDlink(link, log) {
   let dlinkFound = null;
+  let fileName = null;
+  let fileSize = null;
 
   const browser = await chromium.launch({
     headless: true, // set to false if you want to see the browser
@@ -45,23 +47,43 @@ async function fetchDlink(link, log) {
 
         // case 1: list[]
         if (json.list && json.list.length > 0) {
-          const first = json.list[0];
+        const first = json.list[0];
           if (first?.dlink) {
-            dlinkFound = first.dlink;
-            log(`✅ Found dlink (list): ${dlinkFound}`);
-          }
+           dlinkFound = first.dlink;
+         log(`✅ Found dlink (list): ${dlinkFound}`);
+        }
+        if (first?.server_filename) {
+        fileName = first.server_filename;
+        }
+        if (first?.size) {
+        fileSize = first.size;
+        }
         }
 
         // case 2: direct dlink
         if (json.dlink) {
-          dlinkFound = json.dlink;
-          log(`✅ Found dlink (direct): ${dlinkFound}`);
+           dlinkFound = json.dlink;
+            log(`✅ Found dlink (direct): ${dlinkFound}`);
+        }
+        if (json.server_filename) {
+            fileName = json.server_filename;
+        }
+        if (json.size) {
+         fileSize = json.size;
         }
 
         // case 3: urls[]
         if (json.urls && json.urls.length > 0) {
           dlinkFound = json.urls[0].url;
           log(`✅ Found dlink (urls): ${dlinkFound}`);
+        }
+        if (fileName) {
+          log(`📂 File Name: ${fileName}`);
+        }
+        if (fileSize) {
+          const mb = (fileSize / (1024 * 1024)).toFixed(2);
+          const gb = (fileSize / (1024 * 1024 * 1024)).toFixed(2);
+           log(`📦 File Size: ${fileSize} bytes (${mb} MB / ${gb} GB)`);
         }
       }
     } catch (err) {
@@ -118,7 +140,18 @@ async function fetchDlink(link, log) {
     await browser.close();
   }
 
-  return dlinkFound;
+  return {
+  dlink: dlinkFound || null,
+  name: fileName || null,
+  size: (fileSize / (1024 * 1024)).toFixed(2) + " MB" || null
+  } //fileSize
+    //? {
+        //bytes: fileSize,
+        //mb: (fileSize / (1024 * 1024)).toFixed(2) + " MB",
+        //gb: (fileSize / (1024 * 1024 * 1024)).toFixed(2) + " GB"
+      //}
+    //: null
+//};
 }
 
 // 🚀 Express API
@@ -140,7 +173,7 @@ app.get("/api", async (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log("✅ API running at http://localhost:3000/api?link=YOUR_LINK_HERE");
+  console.log("✅ API running at http://localhost:3000/api?");
 });
 
 // exports (optional)
