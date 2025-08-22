@@ -60,11 +60,11 @@ http://localhost:3000
 ### `GET /api`
 
 Query Parameters:
-- `url` → Terabox share link
+- `link` → Terabox share link
 
 #### Example Request:
 ```
-http://localhost:3000/api?url=https://teraboxapp.com/s/XXXXXXXXXXX
+http://localhost:3000/api?link=https://teraboxapp.com/s/XXXXXXXXXXX
 ```
 
 #### Example Response:
