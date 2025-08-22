@@ -23,7 +23,7 @@ async function fetchDlink(link, log) {
 
   const browser = await chromium.launch({
   headless: true,
-  executablePath: "/path/to/brave", // 👈 point to Brave here
+  executablePath: "/usr/bin/brave-browser", // 👈 point to Brave here
   args: ["--no-sandbox", "--disable-setuid-sandbox", "--window-size=1280,800"]
   });
 
