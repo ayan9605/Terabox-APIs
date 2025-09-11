@@ -23,7 +23,6 @@ async function fetchDlink(link, log) {
 
   const browser = await chromium.launch({
   headless: true,
-  executablePath: "/usr/bin/brave-browser", // check actual path
   args: [
     "--no-sandbox",
     "--disable-setuid-sandbox",
